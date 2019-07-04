@@ -1,2 +1,2 @@
 # REST
-Get my oura personal data for processing
+REST API to run on my raspberry
