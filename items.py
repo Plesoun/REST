@@ -11,9 +11,9 @@ def get_timestamp():
 
 
 database = database = PostgreSQL(
-    "postgre",
+    "postgres",
     "testtest",
-    "custom_projects",
+    "localhost:5433/custom_projects",
     schema="albion",
 )
 

@@ -5,7 +5,7 @@ from sqlalchemy import (
     String,
     Date,
 )
-from sqlalchemy.schema import MetaData
+from sqlalchemy.schema import MetaData, Table
 from sqlalchemy.orm import sessionmaker
 import pandas as pd
 from sqlalchemy.ext.declarative import declarative_base
@@ -67,7 +67,7 @@ class PostgreSQL:
         metadata = MetaData(self.engine)
         metadata.reflect()
 
-        table = Items(
+        table = Table(
             f"{table_to_get}",
             metadata,
             autoload=True,
@@ -83,7 +83,8 @@ class PostgreSQL:
         )
 
         session.close()
-        return dataframe.to_json(orient="table")
+
+        return dataframe.to_dict(orient="records")
 
     def save_data(self, table_to_save=None, template=None):
         Session = sessionmaker(bind=self.engine.connect())
