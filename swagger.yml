@@ -23,12 +23,12 @@ paths:
        - name: length
          in: query
          type: integer
-         description: Number of people to get from people
+         description: Number of items to get from items
          required: false
        - name: offset
          in: query
          type: integer
-         description: Offset from beginning of list where to start gathering people
+         description: Offset from beginning of list where to start gathering items
          required: false
      responses:
        200:
