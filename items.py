@@ -11,5 +11,9 @@ database = database = PostgreSQL(
 )
 
 
-def read_all():
-    return database.get_data(table_to_get="market_data")
+def read_table():
+    return database.get_table(table_to_get="market_data")
+
+
+def read_column():
+    pass
