@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.database import PostgreSQL
+from src.postgre_database import PostgreSQL
 
 
 def get_timestamp():
