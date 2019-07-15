@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def create_table(self, tablename, table_structure):
+def create_table(tablename, table_structure):
     connection = sqlite3.connect(
         "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db",
         timeout=200,
@@ -13,7 +13,7 @@ def create_table(self, tablename, table_structure):
     connection.close()
 
 
-def update_table(self, tablename, data):
+def update_table(tablename, data):
     connection = sqlite3.connect(
         "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db",
         timeout=200,
@@ -22,7 +22,7 @@ def update_table(self, tablename, data):
     connection.close()
 
 
-def delete_table(self, tablename):
+def delete_table(tablename):
     connection = sqlite3.connect(
         "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db",
         timeout=200,
