@@ -1,4 +1,5 @@
 from mongoengine import *
+import json
 
 connect(
     db="alb_1",
@@ -33,3 +34,15 @@ class MongoControler:
 
         except ValidationError:
             return {"message": "Input invalid"}
+
+    @staticmethod
+    def get_by_item(item_name):
+        return ItemCity.objects(item_id=item_name).to_json()
+
+    @staticmethod
+    def get_all_objects():
+        result = []
+        for object in ItemCity.objects:
+            result.append(object.to_json())
+
+        return json.dumps(result)
