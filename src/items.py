@@ -1,7 +1,5 @@
 from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
-import sqlite3
-import pandas as pd
 from src.mongo_control import MongoControler
 
 
