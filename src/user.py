@@ -1,5 +1,6 @@
 import sqlite3
 from flask_restful import Resource, reqparse
+from src.mongo_control import MongoControler
 
 
 class User:
@@ -8,41 +9,13 @@ class User:
         self.username = username
         self.password = password
 
-    @classmethod
-    def find_user_by_name(cls, username):
-        connection = sqlite3.connect(
-            "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db"
-        )
-        querry = f"SELECT * FROM users WHERE username=?"
-
-        cursor = connection.cursor()
-        result = cursor.execute(querry, (username,))
-        row = result.fetchone()
-        if row:
-            user = cls(*row)
-        else:
-            user = None
-
-        connection.close()
-        return user
+    @staticmethod
+    def find_user_by_name(username):
+        return MongoControler.get_by_username(username)
 
     @classmethod
     def find_user_by_id(cls, _id):
-        connection = sqlite3.connect(
-            "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db"
-        )
-        querry = "SELECT * FROM users WHERE id=?"
-
-        cursor = connection.cursor()
-        result = cursor.execute(querry, (_id,))
-        row = result.fetchone()
-        if row:
-            user = cls(*row)
-        else:
-            user = None
-
-        connection.close()
-        return user
+        return MongoControler.get_by_id(_id)
 
 
 class UserRegister(Resource):
@@ -64,19 +37,9 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister.parser.parse_args()
 
-        if User.find_user_by_name(data["username"]):
+        if MongoControler.get_by_username(data["username"]):
             return {"message": "Username already exists"}, 400
 
-        connection = sqlite3.connect(
-            "C:\\Users\\jakub\\OneDrive\\Documents\\github\\REST\\database.db"
-        )
-        cursor = connection.cursor()
-
-        querry = "INSERT INTO users VALUES (NULL, ?, ?)"
-
-        cursor.execute(querry, (data["username"], data["password"]))
-
-        connection.commit()
-        connection.close()
+        MongoControler.post_to_userdb(data)
 
         return {"message": "User successfully created"}, 201

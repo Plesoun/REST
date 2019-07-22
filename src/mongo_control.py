@@ -1,10 +1,17 @@
 from mongoengine import *
 import json
+import os
+import pandas as pd
 
 connect(
-    db="alb_1",
+    db="test",
     host="mongodb+srv://ples:test@alb-kalae.mongodb.net/test?retryWrites=true&w=majority",
 )
+
+
+class UserDB(Document):
+    username = StringField(required=True)
+    password = StringField(required=True)
 
 
 class ItemCity(Document):
@@ -19,12 +26,28 @@ class ItemCity(Document):
     sell_price_min_date = DateTimeField(required=True)
 
 
+class UserData:
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+
 class MongoControler:
     def __init__(self):
-        self.connection = connect(
-            db="alb_1",
+        self.item_connection = connect(
+            db="test",
             host="mongodb+srv://ples:test@alb-kalae.mongodb.net/test?retryWrites=true&w=majority",
         )
+
+    @staticmethod
+    def post_to_userdb(to_post):
+        post = UserDB(**to_post)
+        try:
+            post.save()
+
+        except ValidationError:
+            return {"message": "Input invalid"}
 
     @staticmethod
     def post_to_itemcity(to_post):
@@ -34,6 +57,26 @@ class MongoControler:
 
         except ValidationError:
             return {"message": "Input invalid"}
+
+    @staticmethod
+    def get_by_username(username):
+        result = pd.read_json(UserDB.objects(username=username).to_json())
+        result["id"] = result["_id"][0]["$oid"]
+        result.drop(["_id"], axis=1, inplace=True)
+        result = result.to_dict(orient="records")
+        return UserData(
+            result[0]["id"], result[0]["username"], result[0]["password"]
+        )
+
+    @staticmethod
+    def get_by_id(identification):
+        result = pd.read_json(UserDB.objects(id=identification).to_json())
+        result["id"] = result["_id"][0]["$oid"]
+        result.drop(["_id"], axis=1, inplace=True)
+        result = result.to_dict(orient="records")
+        return UserData(
+            result[0]["id"], result[0]["username"], result[0]["password"]
+        )
 
     @staticmethod
     def get_by_item(item_name):
