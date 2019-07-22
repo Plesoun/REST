@@ -58,34 +58,40 @@ class MongoControler:
         except ValidationError:
             return {"message": "Input invalid"}
 
-    @staticmethod
-    def get_by_username(username):
-        result = pd.read_json(UserDB.objects(username=username).to_json())
-        result["id"] = result["_id"][0]["$oid"]
-        result.drop(["_id"], axis=1, inplace=True)
-        result = result.to_dict(orient="records")
+    @classmethod
+    def get_by_username(cls, username):
+        result = cls.process_response(
+            pd.read_json(UserDB.objects(username=username).to_json())
+        )
         return UserData(
             result[0]["id"], result[0]["username"], result[0]["password"]
         )
 
-    @staticmethod
-    def get_by_id(identification):
-        result = pd.read_json(UserDB.objects(id=identification).to_json())
-        result["id"] = result["_id"][0]["$oid"]
-        result.drop(["_id"], axis=1, inplace=True)
-        result = result.to_dict(orient="records")
+    @classmethod
+    def get_by_id(cls, identification):
+        result = cls.process_response(
+            pd.read_json(UserDB.objects(id=identification).to_json())
+        )
         return UserData(
             result[0]["id"], result[0]["username"], result[0]["password"]
         )
 
-    @staticmethod
-    def get_by_item(item_name):
-        return ItemCity.objects(item_id=item_name).to_json()
+    @classmethod
+    def get_by_item(cls, item_name):
+        return cls.process_response(
+            pd.read_json(ItemCity.objects(item_id=item_name).to_json())
+        )
 
     @staticmethod
     def get_all_objects():
         result = []
-        for object in ItemCity.objects:
-            result.append(object.to_json())
+        for i in ItemCity.objects:
+            result.append(i.to_json())
 
         return json.dumps(result)
+
+    @staticmethod
+    def process_response(result):
+        result["id"] = result["_id"][0]["$oid"]
+        result.drop(["_id"], axis=1, inplace=True)
+        return result.to_dict(orient="records")
