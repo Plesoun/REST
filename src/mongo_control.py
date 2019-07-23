@@ -60,12 +60,16 @@ class MongoControler:
 
     @classmethod
     def get_by_username(cls, username):
-        result = cls.process_response(
-            pd.read_json(UserDB.objects(username=username).to_json())
-        )
-        return UserData(
-            result[0]["id"], result[0]["username"], result[0]["password"]
-        )
+
+        try:
+            result = cls.process_response(
+                pd.read_json(UserDB.objects(username=username).to_json())
+            )
+            return UserData(
+                result[0]["id"], result[0]["username"], result[0]["password"]
+            )
+        except KeyError:
+            return None
 
     @classmethod
     def get_by_id(cls, identification):
